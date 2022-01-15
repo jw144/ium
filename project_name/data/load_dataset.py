@@ -3,7 +3,7 @@ import pandas as pd
 
 def load_dataset(path: str, target_column: str = 'returned', upsample: bool = False):
 
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, encoding='unicode_escape')
     df = df.sample(frac=1.0)
 
     if upsample:

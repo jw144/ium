@@ -128,7 +128,7 @@ def prepare_data(base_data_path, from_interim = False, interim_path = "/interim/
         for line in interim_file:
             counter = counter + 1
             line_data = json.loads(line)
-            records.append(create_CSV_string(line_data, category_dict))
+            records.append(create_CSV_list(line_data, category_dict))
 
         return records
 
@@ -143,10 +143,13 @@ def write_as_CSV(target_file, line_data, category_dict):
     target_file.write(",")
     target_file.write(str(line_data["price"]) + "," + str(line_data["discount"]) + "," + line_data["returned"] + "\n")
 
-def create_CSV_string(line_data, category_dict):
-    month_one_hot = ["0" if i != line_data["month"]-1 else "1" for i in range(12)]
-    category_one_hot = ["0" if i != category_dict[line_data["category"]]-1 else "1" for i in range(15)]
-    return (','.join(month_one_hot)) + "," + (','.join(category_one_hot)) + "," + str(line_data["price"]) + "," + str(line_data["discount"]) + "," + line_data["returned"]
+def create_CSV_list(line_data, category_dict):
+    month_one_hot = [0 if i != line_data["month"]-1 else 1 for i in range(12)]
+    category_one_hot = [0 if i != category_dict[line_data["category"]]-1 else 1 for i in range(15)]
+    result = month_one_hot + category_one_hot
+    result.append(line_data["price"])
+    result.append(line_data["discount"])
+    return result
 
 
 
