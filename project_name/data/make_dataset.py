@@ -7,12 +7,11 @@ import os
 
 
 
-def prepare_data(base_data_path, products_path = "/raw/products.jsonl", sessions_path = "/raw/sessions.jsonl", interim_path = "/interim/interim.jsonl", train_path = "/processed/train.csv", eval_path = "/processed/eval.csv", test_path = "/processed/test.csv"):
+def prepare_data(base_data_path, products_path = "/raw/products.jsonl", sessions_path = "/raw/sessions.jsonl", interim_path = "/interim/interim.jsonl", train_path = "/processed/train.csv", test_path = "/processed/test.csv"):
     products_path = base_data_path + products_path
     sessions_path = base_data_path + sessions_path
     interim_path = base_data_path + interim_path
     train_path = base_data_path + train_path
-    eval_path = base_data_path + eval_path
     test_path = base_data_path + test_path
 
     Path(base_data_path + "/interim").mkdir(exist_ok=True)
@@ -93,18 +92,15 @@ def prepare_data(base_data_path, products_path = "/raw/products.jsonl", sessions
     interim_file.close()
 
     train_file = open(train_path, 'w')
-    eval_file = open(eval_path, 'w')
     test_file = open(test_path, 'w')
     interim_file = open(interim_path, 'r')
 
-    train_num = (80*line_number)/100
-    eval_num = (10*line_number)/100
+    train_num = (90*line_number)/100
     test_num = (10*line_number)/100
 
     counter = 0
 
     train_file.write("january,february,march,april,may,june,july,august,september,october,november,december,Okulary 3D,Zestawy głośnomówiące,Odtwarzacze DVD,Anteny RTV,Monitory LCD,Gry PlayStation3,Biurowe urządzenia wielofunkcyjne,Gry komputerowe,Zestawy słuchawkowe,Odtwarzacze mp3 i mp4,Tablety,Telefony stacjonarne,Słuchawki,Gry Xbox 360,Telefony komórkowe,price,discount,returned" + "\n")
-    eval_file.write("january,february,march,april,may,june,july,august,september,october,november,december,Okulary 3D,Zestawy głośnomówiące,Odtwarzacze DVD,Anteny RTV,Monitory LCD,Gry PlayStation3,Biurowe urządzenia wielofunkcyjne,Gry komputerowe,Zestawy słuchawkowe,Odtwarzacze mp3 i mp4,Tablety,Telefony stacjonarne,Słuchawki,Gry Xbox 360,Telefony komórkowe,price,discount,returned" + "\n")
     test_file.write("january,february,march,april,may,june,july,august,september,october,november,december,Okulary 3D,Zestawy głośnomówiące,Odtwarzacze DVD,Anteny RTV,Monitory LCD,Gry PlayStation3,Biurowe urządzenia wielofunkcyjne,Gry komputerowe,Zestawy słuchawkowe,Odtwarzacze mp3 i mp4,Tablety,Telefony stacjonarne,Słuchawki,Gry Xbox 360,Telefony komórkowe,price,discount,returned" + "\n")
 
     for line in interim_file:
@@ -113,10 +109,8 @@ def prepare_data(base_data_path, products_path = "/raw/products.jsonl", sessions
 
         if (category_dict[line_data["category"]] == 9):
             write_as_CSV(test_file, line_data, category_dict)
-        elif (counter > train_num + eval_num):
-            write_as_CSV(test_file, line_data, category_dict)
         elif (counter > train_num):
-            write_as_CSV(eval_file, line_data, category_dict)
+            write_as_CSV(test_file, line_data, category_dict)
         elif (counter <= train_num):
             write_as_CSV(train_file, line_data, category_dict)
 
