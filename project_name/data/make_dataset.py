@@ -97,9 +97,9 @@ def prepare_data(base_data_path, products_path = "/raw/products.jsonl", sessions
     test_file = open(test_path, 'w')
     interim_file = open(interim_path, 'r')
 
-    train_num = (70*line_number)/100
-    eval_num = (15*line_number)/100
-    test_num = (15*line_number)/100
+    train_num = (80*line_number)/100
+    eval_num = (10*line_number)/100
+    test_num = (10*line_number)/100
 
     counter = 0
 
