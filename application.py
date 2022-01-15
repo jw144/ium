@@ -60,10 +60,10 @@ def choice_2():
     print(result)
 
 def choice_3():
-    return 0
+    records = take_input_file_data()
 
 def choice_4():
-    return 0
+    records = take_input_file_data()
 
 def choice_5():
     return 0
