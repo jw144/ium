@@ -15,8 +15,8 @@ def prepare_data(base_data_path, products_path = "/raw/products.jsonl", sessions
     eval_path = base_data_path + eval_path
     test_path = base_data_path + test_path
 
-    Path(base_data_path + "interim").mkdir(exist_ok=True)
-    Path(base_data_path + "processed").mkdir(exist_ok=True)
+    Path(base_data_path + "/interim").mkdir(exist_ok=True)
+    Path(base_data_path + "/processed").mkdir(exist_ok=True)
 
     product_categories = {}
     product_prices = {}
