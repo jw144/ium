@@ -5,34 +5,6 @@ from pathlib import Path
 import json
 
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
-
-    prepare_data(input_filepath)
-
-
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
-
-    main()
-
-
-def dummy_sum(a, b):
-    """Used exclusively to showcase relative imports in tests. See
-       tests/test_make_dataset.py in the repo.
-    """
-    return a + b
 
 
 def prepare_data(base_data_path, products_path = "raw/products.jsonl", sessions_path = "raw/sessions.jsonl", interim_path = "interim/interim.jsonl", train_path = "processed/train.csv", eval_path = "processed/eval.csv", test_path = "processed/test.csv"):
@@ -152,3 +124,38 @@ def prepare_data(base_data_path, products_path = "raw/products.jsonl", sessions_
 
 def write_as_CSV(target_file, line_data):
     target_file.write(line_data["month"] + "," + line_data["category"] + "," + str(line_data["price"]) + "," + str(line_data["discount"]) + "," + line_data["returned"] + "\n")
+
+
+
+
+
+
+
+@click.command()
+@click.argument('input_filepath', type=click.Path(exists=True))
+@click.argument('output_filepath', type=click.Path())
+def main(input_filepath, output_filepath):
+    """ Runs data processing scripts to turn raw data from (../raw) into
+        cleaned data ready to be analyzed (saved in ../processed).
+    """
+    logger = logging.getLogger(__name__)
+    logger.info('making final data set from raw data')
+
+    prepare_data(input_filepath)
+
+
+if __name__ == '__main__':
+    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(level=logging.INFO, format=log_fmt)
+
+    # not used in this stub but often useful for finding various files
+    project_dir = Path(__file__).resolve().parents[2]
+
+    main()
+
+
+def dummy_sum(a, b):
+    """Used exclusively to showcase relative imports in tests. See
+       tests/test_make_dataset.py in the repo.
+    """
+    return a + b
