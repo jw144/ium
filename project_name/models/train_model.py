@@ -46,10 +46,10 @@ def model_performance(model, X, y, dataset_name: str):
 
 def main(args):
 
-    model = ComplementNB() if args.model == 'bayes' else RandomForestClassifier(class_weight='balanced')
+    model = ComplementNB() if args.model == 'bayes' else RandomForestClassifier()
 
     logger.info('Loading dataset at path {}'.format(args.dataset_path))
-    X_train, y_train = load_dataset(args.dataset_path)
+    X_train, y_train = load_dataset(args.dataset_path, upsample=args.upsample)
     if args.test:
         X_test, y_test = load_dataset(args.test)
 
@@ -83,6 +83,7 @@ if __name__ == '__main__':
     parser.add_argument('--test', help='path to test csv dataset', default='data/processed/test.csv')
     parser.add_argument('--save-path', help='path to save model', default='models/model.pkl')
     parser.add_argument('--model', choices=['bayes', 'forest'], default='bayes')
+    parser.add_argument('--upsample', action='store_true')
     parser.add_argument('--optimize', help='Perform gird search to optimize model accuracy', action='store_true')
     parser.add_argument('--params', nargs='*', action=ParamDict)
 
