@@ -2,6 +2,8 @@ import json
 from project_name.data.make_dataset import prepare_data, create_CSV_list
 import pickle
 from project_name.models.predict_model import predict
+from project_name.visualization.visualize import main as vis_main
+from argparse import Namespace
 
 category_dict = {
         "Okulary 3D": 1,
@@ -64,17 +66,23 @@ def choice_3():
     records = take_input_file_data()
     results = predict(model1, records)
     print("Model classification: ")
-    print(results[1])
+    for res in results[1]:
+        print(res)
 
 def choice_4():
     records = take_input_file_data()
     results = predict(model2, records)
     print("Model classification: ")
-    print(results[1])
+    for res in results[1]:
+        print(res)
 
 def choice_5():
-    return 0
-
+    args = Namespace()
+    args.dataset_path = 'data/processed/test.csv'
+    args.bayes = 'models/bayes.pkl'
+    args.forest = 'models/forest.pkl'
+    args.forest_optimized = 'models/forest-optimized.pkl'
+    vis_main(args)
 
 
 user_response = 0
@@ -82,7 +90,7 @@ user_response = 0
 with open("models/bayes.pkl", 'rb') as file:
     model1 = pickle.load(file)
 
-with open("models/forest.pkl", 'rb') as file:
+with open("models/forest-optimized.pkl", 'rb') as file:
     model2 = pickle.load(file)
 
 while (user_response != 6):
