@@ -33,7 +33,15 @@ def dummy_sum(a, b):
     return a + b
 
 
-def prepare_data(products_path = "../../data/raw/products.jsonl", sessions_path = "../../data/raw/sessions.jsonl", interim_path = "../../data/interim/interim.jsonl", train_path = "../../data/processed/train.csv", eval_path = "../../data/processed/eval.csv", test_path = "../../data/processed/test.csv"):
+def prepare_data(base_data_path, products_path = "raw/products.jsonl", sessions_path = "raw/sessions.jsonl", interim_path = "interim/interim.jsonl", train_path = "processed/train.csv", eval_path = "processed/eval.csv", test_path = "processed/test.csv"):
+    products_path = base_data_path + products_path
+    sessions_path = base_data_path + sessions_path
+    interim_path = base_data_path + interim_path
+    train_path = base_data_path + train_path
+    eval_path = base_data_path + eval_path
+    test_path = base_data_path + test_path
+
+
     product_categories = {}
     product_prices = {}
     category_set = set()
