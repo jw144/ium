@@ -3,11 +3,11 @@ import click
 import logging
 from pathlib import Path
 import json
+import os
 
 
 
-
-def prepare_data(base_data_path, products_path = "raw/products.jsonl", sessions_path = "raw/sessions.jsonl", interim_path = "interim/interim.jsonl", train_path = "processed/train.csv", eval_path = "processed/eval.csv", test_path = "processed/test.csv"):
+def prepare_data(base_data_path, products_path = "/raw/products.jsonl", sessions_path = "/raw/sessions.jsonl", interim_path = "/interim/interim.jsonl", train_path = "/processed/train.csv", eval_path = "/processed/eval.csv", test_path = "/processed/test.csv"):
     products_path = base_data_path + products_path
     sessions_path = base_data_path + sessions_path
     interim_path = base_data_path + interim_path
@@ -15,11 +15,13 @@ def prepare_data(base_data_path, products_path = "raw/products.jsonl", sessions_
     eval_path = base_data_path + eval_path
     test_path = base_data_path + test_path
 
+    Path(base_data_path + "interim").mkdir(exist_ok=True)
+    Path(base_data_path + "processed").mkdir(exist_ok=True)
 
     product_categories = {}
     product_prices = {}
     category_set = set()
-    products_file = open(products_path, 'r')         #potencjalnie argumenty?
+    products_file = open(products_path, 'r')
     for line in products_file:
         product_data = json.loads(line)
         product_id = product_data["product_id"]
@@ -35,23 +37,22 @@ def prepare_data(base_data_path, products_path = "raw/products.jsonl", sessions_
 
     last_line_buy = False
 
-    month_list = ["error", "100000000000", "010000000000", "001000000000", "000100000000", "000010000000", "000001000000", "000000100000", "000000010000", "000000001000", "000000000100", "000000000010", "000000000001"]
     category_dict = {
-        "Okulary 3D": "100000000000000",
-        "Zestawy głośnomówiące": "010000000000000",
-        "Odtwarzacze DVD": "001000000000000",
-        "Anteny RTV": "000100000000000",
-        "Monitory LCD": "000010000000000",
-        "Gry PlayStation3": "000001000000000",
-        "Biurowe urządzenia wielofunkcyjne": "000000100000000",
-        "Gry komputerowe": "000000010000000",
-        "Zestawy słuchawkowe": "000000001000000",
-        "Odtwarzacze mp3 i mp4": "000000000100000",
-        "Tablety": "000000000010000",
-        "Telefony stacjonarne": "000000000001000",
-        "Słuchawki": "000000000000100",
-        "Gry Xbox 360": "000000000000010",
-        "Telefony komórkowe": "000000000000001"
+        "Okulary 3D": 1,
+        "Zestawy głośnomówiące": 2,
+        "Odtwarzacze DVD": 3,
+        "Anteny RTV": 4,
+        "Monitory LCD": 5,
+        "Gry PlayStation3": 6,
+        "Biurowe urządzenia wielofunkcyjne": 7,
+        "Gry komputerowe": 8,
+        "Zestawy słuchawkowe": 9,
+        "Odtwarzacze mp3 i mp4": 10,
+        "Tablety": 11,
+        "Telefony stacjonarne": 12,
+        "Słuchawki": 13,
+        "Gry Xbox 360": 14,
+        "Telefony komórkowe": 15
     }
 
     for line in sessions_file:
@@ -80,8 +81,8 @@ def prepare_data(base_data_path, products_path = "raw/products.jsonl", sessions_
             last_line_buy = False
             continue
 
-        month = month_list[int(session_data["timestamp"].split('-')[1])]
-        product_category = category_dict[product_categories[session_data["product_id"]]]
+        month = int(session_data["timestamp"].split('-')[1])
+        product_category = product_categories[session_data["product_id"]]
         product_price = product_prices[session_data["product_id"]]
         offered_discount = session_data["offered_discount"]
 
@@ -102,28 +103,34 @@ def prepare_data(base_data_path, products_path = "raw/products.jsonl", sessions_
 
     counter = 0
 
-    train_file.write("month,category,price,discount,returned" + "\n")
-    eval_file.write("month,category,price,discount,returned" + "\n")
-    test_file.write("month,category,price,discount,returned" + "\n")
+    train_file.write("january,february,march,april,may,june,july,august,september,october,november,december,Okulary 3D,Zestawy głośnomówiące,Odtwarzacze DVD,Anteny RTV,Monitory LCD,Gry PlayStation3,Biurowe urządzenia wielofunkcyjne,Gry komputerowe,Zestawy słuchawkowe,Odtwarzacze mp3 i mp4,Tablety,Telefony stacjonarne,Słuchawki,Gry Xbox 360,Telefony komórkowe,price,discount,returned" + "\n")
+    eval_file.write("january,february,march,april,may,june,july,august,september,october,november,december,Okulary 3D,Zestawy głośnomówiące,Odtwarzacze DVD,Anteny RTV,Monitory LCD,Gry PlayStation3,Biurowe urządzenia wielofunkcyjne,Gry komputerowe,Zestawy słuchawkowe,Odtwarzacze mp3 i mp4,Tablety,Telefony stacjonarne,Słuchawki,Gry Xbox 360,Telefony komórkowe,price,discount,returned" + "\n")
+    test_file.write("january,february,march,april,may,june,july,august,september,october,november,december,Okulary 3D,Zestawy głośnomówiące,Odtwarzacze DVD,Anteny RTV,Monitory LCD,Gry PlayStation3,Biurowe urządzenia wielofunkcyjne,Gry komputerowe,Zestawy słuchawkowe,Odtwarzacze mp3 i mp4,Tablety,Telefony stacjonarne,Słuchawki,Gry Xbox 360,Telefony komórkowe,price,discount,returned" + "\n")
 
     for line in interim_file:
         counter = counter + 1
         line_data = json.loads(line)
 
-        if (line_data["category"] == "000000001000000"):
-            write_as_CSV(test_file, line_data)
+        if (category_dict[line_data["category"]] == 9):
+            write_as_CSV(test_file, line_data, category_dict)
         elif (counter > train_num + eval_num):
-            write_as_CSV(test_file, line_data)
+            write_as_CSV(test_file, line_data, category_dict)
         elif (counter > train_num):
-            write_as_CSV(eval_file, line_data)
+            write_as_CSV(eval_file, line_data, category_dict)
         elif (counter <= train_num):
-            write_as_CSV(train_file, line_data)
+            write_as_CSV(train_file, line_data, category_dict)
 
 
 
 
-def write_as_CSV(target_file, line_data):
-    target_file.write(line_data["month"] + "," + line_data["category"] + "," + str(line_data["price"]) + "," + str(line_data["discount"]) + "," + line_data["returned"] + "\n")
+def write_as_CSV(target_file, line_data, category_dict):
+    month_one_hot = ["0" if i != line_data["month"]-1 else "1" for i in range(12)]
+    target_file.write(','.join(month_one_hot))
+    target_file.write(",")
+    category_one_hot = ["0" if i != category_dict[line_data["category"]]-1 else "1" for i in range(15)]
+    target_file.write(','.join(category_one_hot))
+    target_file.write(",")
+    target_file.write(str(line_data["price"]) + "," + str(line_data["discount"]) + "," + line_data["returned"] + "\n")
 
 
 
