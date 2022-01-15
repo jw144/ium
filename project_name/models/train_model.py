@@ -46,7 +46,7 @@ def model_performance(model, X, y, dataset_name: str):
 
 def main(args):
 
-    model = ComplementNB() if args.model == 'bayes' else RandomForestClassifier()
+    model = ComplementNB() if args.model == 'bayes' else RandomForestClassifier(class_weight='balanced')
 
     logger.info('Loading dataset at path {}'.format(args.dataset_path))
     X_train, y_train = load_dataset(args.dataset_path, upsample=args.upsample)
