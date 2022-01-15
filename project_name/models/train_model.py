@@ -3,11 +3,17 @@ import logging
 from argparse import Action
 from argparse import ArgumentParser
 
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import ComplementNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import balanced_accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
 
 from project_name.data.load_dataset import load_dataset
+from project_name.models.predict_model import predict
+
+logger = logging.getLogger(__name__)
 
 
 class ParamDict(Action):
@@ -26,12 +32,21 @@ class ParamDict(Action):
             getattr(namespace, self.dest)[param] = param_values
 
 
+def model_performance(model, X, y, dataset_name: str):
+
+    X, predictions = predict(model, X)
+
+    logger.info('Performance on {} dataset: balanced_accuracy - {:.3f}, precision - {:.3f}, recall - {:.3f}'.format(
+        dataset_name,
+        balanced_accuracy_score(y, predictions),
+        precision_score(y, predictions),
+        recall_score(y, predictions)
+    ))
+
+
 def main(args):
 
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
-
-    model = GaussianNB() if args.model == 'bayes' else RandomForestClassifier()
+    model = ComplementNB() if args.model == 'bayes' else RandomForestClassifier(class_weight='balanced')
 
     logger.info('Loading dataset at path {}'.format(args.dataset_path))
     X_train, y_train = load_dataset(args.dataset_path)
@@ -47,9 +62,9 @@ def main(args):
     if args.optimize:
         logger.info('Best model parameters: {}'.format(model.best_params_))
 
-    logger.info('Accuracy on training dataset: {}'.format(model.score(X_train, y_train)))
+    model_performance(model, X_train, y_train, 'train')
     if args.test:
-        logger.info('Accuracy on evaluation dataset: {}'.format(model.score(X_test, y_test)))
+        model_performance(model, X_test, y_test, 'test')
     logger.info('Training finished')
 
     logger.info('Saving model at {}'.format(args.save_path))
