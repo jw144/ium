@@ -128,7 +128,7 @@ def prepare_data(products_path = "../../data/raw/products.jsonl", sessions_path 
         counter = counter + 1
         line_data = json.loads(line)
 
-        if (line_data["category"] == "000000000000100"):
+        if (line_data["category"] == "000000001000000"):
             write_as_CSV(test_file, line_data)
         elif (counter > train_num + eval_num):
             write_as_CSV(test_file, line_data)
