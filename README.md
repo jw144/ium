@@ -56,3 +56,14 @@ Setting up the environment
 5. To run unit tests for your service use `poetry run pytest` or simply `pytest` within `poetry shell`.
 
 <p><small>Project partially based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+
+--------
+
+
+Usage instructions
+------------
+
+1. Run `make_dataset.py`
+2. Train models using `train_model.py`
+3. Run `appliation.py`
