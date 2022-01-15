@@ -78,7 +78,8 @@ def choice_4():
 
 def choice_5():
     args = Namespace()
-    args.dataset_path = 'data/processed/test.csv'
+    args.test_dataset = 'data/processed/test.csv'
+    args.train_dataset = 'data/processed/train.csv'
     args.bayes = 'models/bayes.pkl'
     args.forest = 'models/forest.pkl'
     args.forest_optimized = 'models/forest-optimized.pkl'
